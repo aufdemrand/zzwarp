@@ -1,1 +1,29 @@
-<h1>ZZGOD</h1>
+<div id="home">
+    <h1 class="home-title">ZZGOD</h1>
+    <button id="start-btn" class="tool-btn">START NEW GAME</button>
+    <div class="home-divider">or</div>
+    <div class="home-rejoin">
+        <input id="rejoin-input" type="text" placeholder="world id">
+        <button id="rejoin-btn" class="tool-btn">REJOIN</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('start-btn').addEventListener('click', function() {
+        var id = String(Math.floor(100000 + Math.random() * 900000));
+        window.location.href = '/w/' + id;
+    });
+
+    var rejoinInput = document.getElementById('rejoin-input');
+    var rejoinBtn = document.getElementById('rejoin-btn');
+
+    function rejoin() {
+        var id = rejoinInput.value.trim();
+        if (id) window.location.href = '/w/' + id;
+    }
+
+    rejoinBtn.addEventListener('click', rejoin);
+    rejoinInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') rejoin();
+    });
+</script>

@@ -1,30 +1,77 @@
-<%@ page import="data.World" %>
+<%@ page import="game.Game; data.World" %>
 <%
 
     def world = data.'world' as data.World
 
-
+    // The Game.groovy will stop ticking the world if the last update was > 30 minutes
+    world.lastUpdate = System.currentTimeMillis()
+    // Tick the game if it isn't already ticking
+    Game.setActive(world._id)
+    // Add user as a spectator so they can be chosen to play God
+    world.spectators.addAll(client.authenticationCookies ?: [])
 
 %>
 
-${{ world.cdata() }}
+${{ [ 'player-status': (client.authenticationCookies.contains(world.currentPlayer) ? 'GOD' : 'SPECTATING') ].cdata() }}
+${{ [ 'name'    : world.name    ].cdata() }}
+${{ [ 'board'   : world.board   ].cdata() }}
+${{ [ 'tiles'   : world.tiles   ].cdata() }}
+${{ [ 'meeples'   : world.meeples   ].cdata() }}
+${{ [ 'totalBorn' : world.totalBorn ].cdata() }}
+${{ [ 'timer' : world.timer ].cdata() }}
+${{ [ 'palette' : world.palette ].cdata() }}
 
 <div id="game-screen">
 
     <div id="game-header">
-        <span class="world-name">${ world.name }</span>
-        <span class="status-badge">SPECTATING</span>
+        <span class="world-name" bind="world.name">${ world.name }</span>
+        <span class="game-timer"></span>
+        <span class="status-badge" bind="player-status">SPECTATING</span>
     </div>
 
     <div id="game-viewport">
-        <canvas id="world-canvas" width="384" height="384"></canvas>
+        <canvas id="world-canvas" width="288" height="288"></canvas>
         <div class="scanlines"></div>
         <div class="crt-overlay"></div>
+    </div>
+    <div id="meeple-tooltip"></div>
+
+    <div id="knobs">
+        <g:crt-knob></g:crt-knob>
+        <g:scanline-knob></g:scanline-knob>
+    </div>
+
+    <div id="toolbar">
+        <button class="tool-btn" data-panel="panel-palette">PALETTE</button>
+        <button class="tool-btn" data-panel="panel-architect">ARCHITECT</button>
+    </div>
+
+    <div class="panel" id="panel-palette" style="display:none">
+        <div class="panel-header">PALETTE <span class="panel-close" data-panel="panel-palette">x</span></div>
+        <div class="panel-body"><g:palette world-id="${ world._id }"></g:palette></div>
+    </div>
+
+    <div class="panel" id="panel-architect" style="display:none">
+        <div class="panel-header">ARCHITECT <span class="panel-close" data-panel="panel-architect">x</span></div>
+        <div class="panel-body"><g:block-editor world-id="${ world._id }"></g:block-editor></div>
     </div>
 
     <div id="game-footer">
         <span class="queue-info">Watching the void...</span>
+        <span class="pop-info"></span>
         <span class="coord-info"></span>
+        <button id="share-btn" class="tool-btn">SHARE</button>
+    </div>
+
+    <div id="share-overlay" style="display:none">
+        <div id="share-dialog">
+            <div class="share-title">SHARE WITH A FRIEND</div>
+            <input id="share-url" type="text" readonly>
+            <div class="share-actions">
+                <button id="share-copy" class="tool-btn">COPY</button>
+                <button id="share-close" class="tool-btn">CLOSE</button>
+            </div>
+        </div>
     </div>
 
 </div>
