@@ -1,0 +1,179 @@
+/* ============================================
+   ZZGOD — CRT / Neon Aesthetic
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+:root {
+    --bg:          #0a0a0c;
+    --bg-surface:  #111115;
+    --neon-green:  #39ff14;
+    --neon-cyan:   #00ffff;
+    --neon-purple: #bf00ff;
+    --neon-pink:   #ff006e;
+    --dim:         #333340;
+    --text:        #8888aa;
+    --font-mono:   'Share Tech Mono', monospace;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+
+/* ---- Game Screen Shell ---- */
+
+#game-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+
+/* ---- Header ---- */
+
+#game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 4px;
+}
+
+.world-name {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--neon-cyan);
+    text-shadow:
+        0 0 4px var(--neon-cyan),
+        0 0 12px rgba(0, 255, 255, 0.3);
+}
+
+.status-badge {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--neon-green);
+    border: 1px solid var(--neon-green);
+    padding: 2px 8px;
+    text-shadow: 0 0 6px var(--neon-green);
+    box-shadow: 0 0 4px rgba(57, 255, 20, 0.2);
+    animation: pulse-badge 3s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+    0%, 100% { opacity: 0.7; }
+    50%      { opacity: 1; }
+}
+
+
+/* ---- Viewport (Canvas + Overlays) ---- */
+
+#game-viewport {
+    position: relative;
+    width: 576px;
+    height: 576px;
+    background: #000;
+    border: 1px solid var(--dim);
+    box-shadow:
+        0 0 20px rgba(0, 255, 255, 0.06),
+        0 0 60px rgba(0, 255, 255, 0.03),
+        inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+#world-canvas {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    display: block;
+}
+
+/* Scanline overlay */
+.scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.15) 2px,
+        rgba(0, 0, 0, 0.15) 4px
+    );
+    z-index: 2;
+}
+
+/* CRT vignette + glow */
+.crt-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 60%,
+        rgba(0, 0, 0, 0.4) 100%
+    );
+}
+
+
+/* ---- Footer ---- */
+
+#game-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 4px;
+}
+
+.queue-info {
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 1px;
+}
+
+.coord-info {
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 1px;
+}
+
+
+/* ---- God Mode State ---- */
+
+#game-screen.god-mode .status-badge {
+    color: var(--neon-pink);
+    border-color: var(--neon-pink);
+    text-shadow: 0 0 8px var(--neon-pink);
+    box-shadow: 0 0 6px rgba(255, 0, 110, 0.3);
+    animation: pulse-badge-god 0.8s ease-in-out infinite;
+}
+
+#game-screen.god-mode #game-viewport {
+    border-color: var(--neon-purple);
+    box-shadow:
+        0 0 20px rgba(191, 0, 255, 0.1),
+        0 0 60px rgba(191, 0, 255, 0.05),
+        inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes pulse-badge-god {
+    0%, 100% { opacity: 0.8; }
+    50%      { opacity: 1; }
+}

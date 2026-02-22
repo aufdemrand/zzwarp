@@ -1,0 +1,31 @@
+<%@ page import="data.World" %>
+<%
+
+    def world = data.'world' as data.World
+
+
+
+%>
+
+${{ world.cdata() }}
+
+<div id="game-screen">
+
+    <div id="game-header">
+        <span class="world-name">${ world.name }</span>
+        <span class="status-badge">SPECTATING</span>
+    </div>
+
+    <div id="game-viewport">
+        <canvas id="world-canvas" width="384" height="384"></canvas>
+        <div class="scanlines"></div>
+        <div class="crt-overlay"></div>
+    </div>
+
+    <div id="game-footer">
+        <span class="queue-info">Watching the void...</span>
+        <span class="coord-info"></span>
+    </div>
+
+</div>
+
